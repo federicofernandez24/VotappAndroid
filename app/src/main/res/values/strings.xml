@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Votapp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="password_hint">Password</string>
+    <string name="username_hint">Username</string>
+    <string name="image_logo">Logo Votapp</string>
+    <string name="login">Login</string>
+    <string name="icon_user">Username</string>
+    <string name="icon_pass">Password</string>
+
+    <!-- Menu drawer strings -->
+    <string name="title_activity_home">Home</string>
+
+    <string name="menu_option1">Encuestas</string>
+    <string name="menu_option2">Ayuda</string>
+    <string name="title_section3">Section 3</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+    <string name="votappLogoHome">Votapp Consultor</string>
+    <string name="image_home">Home</string>
+    <string name="icon_optEncuesta">Encuestas</string>
+</resources>

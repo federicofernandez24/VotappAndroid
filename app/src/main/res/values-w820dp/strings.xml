@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="password_hint">Password</string>
+    <string name="username_hint">Username</string>
+    <string name="image_logo">Logo Votapp</string>
+    <string name="login">Login</string>
+    <string name="icon_user">Username</string>
+    <string name="icon_pass">Password</string>
+</resources>
