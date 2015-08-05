@@ -1,24 +1,64 @@
 package com.votapp.fede.votapp.views;
 
 import android.app.Activity;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.votapp.fede.votapp.Encuesta;
 import com.votapp.fede.votapp.R;
+import com.votapp.fede.votapp.api.ApiTypes;
+import com.votapp.fede.votapp.api.ConsultorApi;
+import com.votapp.fede.votapp.bus.BusProvider;
+import com.votapp.fede.votapp.controller.AppController;
+import com.votapp.fede.votapp.domain.utils.Constants;
+import com.votapp.fede.votapp.events.EmergencyEvent;
+import com.votapp.fede.votapp.events.GetEncuestasEvent;
+import com.votapp.fede.votapp.events.LoadedErrorEvent;
+import com.votapp.fede.votapp.events.LoadedMeEvent;
+import com.votapp.fede.votapp.util.ResponseToString;
 import com.votapp.fede.votapp.views.fragments.NavigationDrawerFragment;
 
-public class HomeActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+
+import retrofit.Callback;
+import retrofit.ResponseCallback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class HomeActivity extends ActionBarActivity
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, LocationListener {
+
+    private Bus mBus;
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -28,12 +68,81 @@ public class HomeActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    /*
+    * App data:
+    * - token devuelto por el login.
+    * */
+    private String userToken;
+    private String username;
+    private int idUser;
+    private JSONObject payloadToken;
+    private int consultoraID;
+    private JSONArray encuestasJson;
+    private Location location;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        final Button button = (Button) findViewById(R.id.button_emergencia);
+        button.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(HomeActivity.this)
+                        .setTitle("Emergencia!")
+                        .setMessage("Quieres mandar un mensaje de ayuda a tu consultora?")
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                getBus().post(new EmergencyEvent());
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                return true;
+            }
+        });
+        // Obtengo los datos del intent que llamo a esta activity despues del Login
+        Intent intent = getIntent();
+        username = "Unknown";
+        if (intent.getStringExtra(Constants.USER_TOKEN_RESPONSE) != null) {
+            userToken = intent.getStringExtra(Constants.USER_TOKEN_RESPONSE);
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(Constants.USER_TOKEN_RESPONSE, userToken);
+            editor.commit();
+        }
+        else {
+            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+            userToken = sharedPref.getString(Constants.USER_TOKEN_RESPONSE, "");
+        }
+        String[] jwtParts = userToken.split("\\.");
 
+        //byte[] jwtHeader = Base64.decodeBase64(jwtParts[0]);
+        byte[] data = Base64.decode(jwtParts[1], Base64.DEFAULT);
+
+        //byte[] jwtPayload = Base64.decodeBase64(jwtParts[1]);
+        //Jwt<Header,String> hola = Jwts.parser().parsePlaintextJwt(userToken);
+        //String body = hola.getBody();
+        try {
+            String text = new String(data, "UTF-8");
+            payloadToken = new JSONObject(text);
+            consultoraID = payloadToken.getInt("idConsultora");
+            username = payloadToken.getString("username");
+            idUser = payloadToken.getInt("id");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        //idConsultora = Integer.parseInt(valor);
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -42,6 +151,9 @@ public class HomeActivity extends ActionBarActivity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+        TextView message = (TextView) findViewById(R.id.usermsg_welcome);
+        message.setText("Bienvenido "+username+"!");
+        mBus = BusProvider.getInstance();
     }
 
     @Override
@@ -57,12 +169,18 @@ public class HomeActivity extends ActionBarActivity
         switch (number) {
             case 1:
                 mTitle = getString(R.string.menu_option1);
+                getBus().post(new GetEncuestasEvent(consultoraID));
                 break;
             case 2:
                 mTitle = getString(R.string.menu_option2);
                 break;
             case 3:
-                mTitle = getString(R.string.title_section3);
+                SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.clear();
+                editor.commit();
+                Intent intent = new Intent(this, Login.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -101,6 +219,140 @@ public class HomeActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getBus().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getBus().register(this);
+        getBus().post(new GetEncuestasEvent(consultoraID));
+    }
+    @Subscribe
+    public void onInitialize(GetEncuestasEvent getEncuestasEvent) {
+        Callback callback = new ResponseCallback() {
+            @Override
+            public void success(Response response) {
+
+                ResponseToString rsto = new ResponseToString();
+
+                String result = rsto.procesarBody(response);
+                try {
+                    encuestasJson = new JSONArray(result);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                mBus.post(new LoadedMeEvent("OK"));
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                mBus.post(new LoadedErrorEvent(retrofitError));
+            }
+        };
+        ConsultorApi mApi = (ConsultorApi) AppController.getApiOfType(ApiTypes.USER_API);
+        mApi.getEncuestasByIdConsultora(consultoraID, callback);
+
+    }
+    @Subscribe
+    public void onLogin(LoadedMeEvent loadedMeEvent) {
+
+
+        int total = encuestasJson.length();
+        ListView lista = (ListView) findViewById(R.id.encuestasList);
+        try {
+
+            String[] stringarray = new String[total];
+            for (int i = 0; i < total; i++) {
+                JSONObject json = encuestasJson.getJSONObject(i);
+                stringarray[i] = json.getString("nombre");
+            }
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringarray);
+            lista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Intent intent = new Intent(HomeActivity.this, Encuesta.class);
+                    try {
+                        intent.putExtra(Constants.ENCUESTA_JSON, encuestasJson.getJSONObject(position).toString());
+                        intent.putExtra(Constants.CALLER, "HOME");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    startActivity(intent);
+                }
+            });
+            lista.setAdapter(adapter);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+    @Subscribe
+    public void onAlarm(EmergencyEvent emergencyEvent) {
+
+        JSONObject locationEmergencia = new JSONObject();
+        try {
+            locationEmergencia.put("longitud", (location!=null)?location.getLongitude():0);
+            locationEmergencia.put("latitud", (location!=null)?location.getLatitude():0);
+            locationEmergencia.put("userName", username);
+            locationEmergencia.put("idConsultora",consultoraID);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Callback callback = new ResponseCallback() {
+            @Override
+            public void success(Response response) {
+
+                Toast.makeText(getApplicationContext(),"ALERTA RECIBIDA",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                Toast.makeText(getApplicationContext(),"error: Corre por tu vida",Toast.LENGTH_SHORT).show();
+            }
+        };
+        ConsultorApi mApi = (ConsultorApi) AppController.getApiOfType(ApiTypes.USER_API);
+        mApi.alertarEmergencia(locationEmergencia, callback);
+
+
+    }
+
+        // Use some kind of injection, so that we can swap in a mock for tests.
+    // Here we just use simple getter/setter injection for simplicity.
+    private Bus getBus() {
+        if (mBus == null) {
+            mBus = BusProvider.getInstance();
+        }
+        return mBus;
+    }
+
+    public void setBus(Bus bus) {
+        mBus = bus;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        this.location = location;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
     /**

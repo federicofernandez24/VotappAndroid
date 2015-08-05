@@ -24,4 +24,9 @@
     <string name="votappLogoHome">Votapp Consultor</string>
     <string name="image_home">Home</string>
     <string name="icon_optEncuesta">Encuestas</string>
+
+    <string name="title_activity_encuesta">Nueva Opinion</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="sumbit">Alta Opinion</string>
 </resources>

@@ -39,8 +39,8 @@
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">0dp</item>
         <item name="android:padding">16dp</item>
-        <item name="android:layout_marginLeft">56dp</item>
-        <item name="android:layout_marginRight">56dp</item>
+        <item name="android:layout_marginLeft">64dp</item>
+        <item name="android:layout_marginRight">64dp</item>
         <item name="android:typeface">sans</item>
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:textSize">16dp</item>
@@ -59,7 +59,7 @@
     </style>
     <style name="image_home">
         <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_weight">1</item>
+        <item name="android:layout_weight">2</item>
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:alpha">0.5</item>
@@ -72,7 +72,7 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:padding">16dp</item>
         <item name="android:typeface">sans</item>
-        <item name="android:textSize">30dp</item>
+        <item name="android:textSize">20dp</item>
 
     </style>
     <style name="home_content">
@@ -119,5 +119,32 @@
         <item name="android:layout_height">56dp</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:alpha">0.5</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">@style/ButtonBar</item>
+        <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
+    </style>
+
+    <!-- Backward-compatible version of ?android:attr/buttonBarStyle -->
+    <style name="ButtonBar">
+        <item name="android:paddingLeft">2dp</item>
+        <item name="android:paddingTop">5dp</item>
+        <item name="android:paddingRight">2dp</item>
+        <item name="android:paddingBottom">0dp</item>
+        <item name="android:background">@android:drawable/bottom_bar</item>
+    </style>
+
+    <!-- Backward-compatible version of ?android:attr/buttonBarButtonStyle -->
+    <style name="ButtonBarButton" />
+
+    <style name="buttonEmergencia">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:gravity">center</item>
     </style>
 </resources>

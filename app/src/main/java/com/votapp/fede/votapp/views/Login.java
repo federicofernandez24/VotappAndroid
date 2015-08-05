@@ -16,12 +16,17 @@ import com.votapp.fede.votapp.controller.AppController;
 import com.votapp.fede.votapp.bus.BusProvider;
 import com.votapp.fede.votapp.api.ConsultorApi;
 import com.votapp.fede.votapp.domain.User;
+import com.votapp.fede.votapp.domain.utils.Constants;
 import com.votapp.fede.votapp.events.LoadAuthenticateEvent;
 import com.votapp.fede.votapp.events.LoadedErrorEvent;
 import com.votapp.fede.votapp.events.LoadedMeEvent;
+import com.votapp.fede.votapp.util.ResponseToString;
 
 import org.apache.commons.codec.binary.Hex;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -124,8 +129,12 @@ public class Login extends ActionBarActivity {
         Callback callback = new ResponseCallback() {
             @Override
             public void success(Response response) {
-                System.out.println(response.getBody());
-                mBus.post(new LoadedMeEvent(response));
+
+                ResponseToString rsto = new ResponseToString();
+
+                String result = rsto.procesarBody(response);
+
+                mBus.post(new LoadedMeEvent(result));
             }
 
             @Override
@@ -139,6 +148,7 @@ public class Login extends ActionBarActivity {
     @Subscribe
     public void onLogin(LoadedMeEvent loadedMeEvent) {
         Intent intent = new Intent(this, HomeActivity.class);
+        intent.putExtra(Constants.USER_TOKEN_RESPONSE, loadedMeEvent.getValor());
         startActivity(intent);
     }
 }

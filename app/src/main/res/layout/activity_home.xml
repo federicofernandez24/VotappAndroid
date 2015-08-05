@@ -27,14 +27,27 @@
                     style="@style/home_welcome"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Hola, Admin!"
-                    android:id="@+id/textView"/>
+                    android:id="@+id/usermsg_welcome"/>
+
+                <Button
+                    style="@style/buttonEmergencia"
+                    android:background="@drawable/button_emergency"
+                    android:text="S.O.S"
+                    android:id="@+id/button_emergencia"
+                    android:longClickable="true" />
 
             </LinearLayout>
 
             <LinearLayout
                 style="@style/home_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/home_content">
 
+                <ListView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/encuestasList"
+                    android:clickable="true" />
             </LinearLayout>
 
             </LinearLayout>
