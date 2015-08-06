@@ -148,7 +148,7 @@ public class Encuesta extends Activity {
                 pregunta_principal.setText("Usted que partido piensa votar?");
                 String[] partidos_spinner = new String[total+1];
                 for (int i = 0; i < total; i++) {
-                    JSONObject json = candidatos.getJSONObject(i);
+                    JSONObject json = partidos.getJSONObject(i);
                     partidos_spinner[i] = json.getString("nombre");
                 }
                 partidos_spinner[total] = new String("");
