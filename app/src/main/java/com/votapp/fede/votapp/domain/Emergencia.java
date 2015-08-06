@@ -21,21 +21,27 @@ public class Emergencia {
 	public void setIdEncuestador(int idEncuestador) {
 		this.idEncuestador = idEncuestador;
 	}
+
 	public int getIdConsultora() {
 		return idConsultora;
 	}
+
 	public void setIdConsultora(int idConsultora) {
 		this.idConsultora = idConsultora;
 	}
+
 	public double getLatitud() {
 		return latitud;
 	}
+
 	public void setLatitud(double latitud) {
 		this.latitud = latitud;
 	}
+
 	public double getLongitud() {
 		return longitud;
 	}
+
 	public void setLongitud(double longitud) {
 		this.longitud = longitud;
 	}
