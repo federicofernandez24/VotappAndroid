@@ -233,7 +233,7 @@ public class Encuesta extends Activity {
             Spinner combo_nivel = (Spinner) findViewById(R.id.combo_nivel);
             if (preguntarNivelEstudio){
                 pregunta_nivel.setText("Nivel de Estudios :");
-                String[] nivel_spinner = new String[] {"Primaria","Secundaria","Terciaria","NS_NC"};
+                String[] nivel_spinner = new String[] {"Primaria","Secundaria","Terciaria","Blanco","NS_NC"};
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, nivel_spinner );
                 combo_nivel.setAdapter(adapter);
             } else {

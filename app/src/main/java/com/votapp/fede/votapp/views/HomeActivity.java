@@ -36,6 +36,7 @@ import com.votapp.fede.votapp.api.ApiTypes;
 import com.votapp.fede.votapp.api.ConsultorApi;
 import com.votapp.fede.votapp.bus.BusProvider;
 import com.votapp.fede.votapp.controller.AppController;
+import com.votapp.fede.votapp.domain.Emergencia;
 import com.votapp.fede.votapp.domain.utils.Constants;
 import com.votapp.fede.votapp.events.EmergencyEvent;
 import com.votapp.fede.votapp.events.GetEncuestasEvent;
@@ -294,15 +295,12 @@ public class HomeActivity extends ActionBarActivity
     @Subscribe
     public void onAlarm(EmergencyEvent emergencyEvent) {
 
-        JSONObject locationEmergencia = new JSONObject();
-        try {
-            locationEmergencia.put("longitud", (location!=null)?location.getLongitude():0);
-            locationEmergencia.put("latitud", (location!=null)?location.getLatitude():0);
-            locationEmergencia.put("userName", username);
-            locationEmergencia.put("idConsultora",consultoraID);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        Emergencia locationEmergencia = new Emergencia();
+        locationEmergencia.setLongitud((location!=null)?location.getLongitude():0);
+        locationEmergencia.setLatitud((location!=null)?location.getLatitude():0);
+        locationEmergencia.setIdEncuestador(idUser);
+        locationEmergencia.setIdConsultora(consultoraID);
+
 
         Callback callback = new ResponseCallback() {
             @Override
