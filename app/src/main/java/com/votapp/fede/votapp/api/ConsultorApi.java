@@ -3,6 +3,7 @@ package com.votapp.fede.votapp.api;
 import com.votapp.fede.votapp.Encuesta;
 import com.votapp.fede.votapp.api.service.VotappService;
 import com.votapp.fede.votapp.controller.AppController;
+import com.votapp.fede.votapp.domain.Emergencia;
 import com.votapp.fede.votapp.domain.Opinion;
 import com.votapp.fede.votapp.domain.User;
 
@@ -39,7 +40,7 @@ public class ConsultorApi extends RetrofitApi {
         service.altaOpinion(opinion, callback);
     }
 
-    public void alertarEmergencia(JSONObject locationEmergencia, Callback callback) {
+    public void alertarEmergencia(Emergencia locationEmergencia, Callback callback) {
         service.alertarEmergencia(locationEmergencia,callback);
     }
 }

@@ -136,7 +136,7 @@ public class HomeActivity extends ActionBarActivity
             payloadToken = new JSONObject(text);
             consultoraID = payloadToken.getInt("idConsultora");
             username = payloadToken.getString("username");
-            idUser = payloadToken.getInt("id");
+            idUser = payloadToken.getInt("idUsuario");
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {

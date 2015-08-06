@@ -1,6 +1,7 @@
 package com.votapp.fede.votapp.api.service;
 
 import com.votapp.fede.votapp.Encuesta;
+import com.votapp.fede.votapp.domain.Emergencia;
 import com.votapp.fede.votapp.domain.Opinion;
 import com.votapp.fede.votapp.domain.User;
 
@@ -30,5 +31,5 @@ public interface VotappService {
     void altaOpinion(@Body Opinion opinion, Callback<Response> callback);
 
     @POST("/encuesta/protected/alertarEmergencia")
-    void alertarEmergencia(@Body JSONObject locationEmergencia, Callback<Response> callback);
+    void alertarEmergencia(@Body Emergencia locationEmergencia, Callback<Response> callback);
 }
