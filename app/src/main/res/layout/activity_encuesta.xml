@@ -109,6 +109,41 @@
                         android:id="@+id/combo_nivel" />
                 </LinearLayout>
 
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pregunta_trabaja" />
+
+                    <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/combo_trabaja" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/pregunta_ingreso" />
+
+                    <EditText
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:ems="10"
+                        android:id="@+id/input_ingreso" />
+
+                </LinearLayout>
+
                 <LinearLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
                     android:layout_width="match_parent" android:layout_height="wrap_content"
                     android:layout_gravity="bottom|center_horizontal"

@@ -60,6 +60,14 @@ public class Opinion {
         this.nivelEstudio = nivelEstudio;
     }
 
+    public double getIngresos() { return ingresos; }
+
+    public void setIngresos(double ingresos) { this.ingresos = ingresos; }
+
+    public boolean getTrabaja() { return trabaja; }
+
+    public void setTrabaja(boolean trabaja) { this.trabaja = trabaja; }
+
     private int idEncuesta;
     private int idCandidato;
     private int idPartido;
@@ -67,4 +75,6 @@ public class Opinion {
     private int edad;
     private String sexo;
     private String nivelEstudio;
+    private boolean trabaja;
+    private double ingresos;
 }

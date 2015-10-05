@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.telephony.SmsManager;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -301,6 +302,11 @@ public class HomeActivity extends ActionBarActivity
         locationEmergencia.setIdEncuestador(idUser);
         locationEmergencia.setIdConsultora(consultoraID);
 
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage("+59899858771", null, "AYUDA! Encuestador "+this.username+" en peligro." +
+                " Lugar: (latitud, longitud):("+
+                //location.getLatitude()+","+location.getLongitude()+
+                ")" , null, null);
 
         Callback callback = new ResponseCallback() {
             @Override

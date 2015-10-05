@@ -92,7 +92,6 @@ public class Encuesta extends Activity {
      *
      */
     private JSONObject encuesta;
-    private JSONObject opinion;
     private int idEncuesta;
     private boolean porCandidato;
     private JSONArray candidatos;
@@ -101,6 +100,8 @@ public class Encuesta extends Activity {
     private boolean preguntarSexo;
     private boolean preguntarLista;
     private boolean preguntarNivelEstudio;
+    private boolean preguntarTrabaja;
+    private boolean preguntarIngresos;
     private JSONArray listas;
 
     @Override
@@ -128,6 +129,8 @@ public class Encuesta extends Activity {
             preguntarEdad = encuesta.getBoolean("preguntarEdad");
             preguntarSexo = encuesta.getBoolean("preguntarSexo");
             preguntarNivelEstudio = encuesta.getBoolean("preguntarNivelEstudio");
+            preguntarTrabaja = encuesta.getBoolean("preguntarSiTrabaja");
+            preguntarIngresos = encuesta.getBoolean("preguntarIngresos");
 
             TextView pregunta_principal =  (TextView) findViewById(R.id.pregunta_principal);
             Spinner spinner_principal = (Spinner) findViewById(R.id.combo_principal);
@@ -140,7 +143,7 @@ public class Encuesta extends Activity {
                     JSONObject json = candidatos.getJSONObject(i);
                     candidatos_spinner[i] = json.getString("nombre");
                 }
-                candidatos_spinner[total] = new String("");
+                candidatos_spinner[total] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, candidatos_spinner );
                 spinner_principal.setAdapter(adapter);
             } else {
@@ -151,7 +154,7 @@ public class Encuesta extends Activity {
                     JSONObject json = partidos.getJSONObject(i);
                     partidos_spinner[i] = json.getString("nombre");
                 }
-                partidos_spinner[total] = new String("");
+                partidos_spinner[total] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, partidos_spinner );
                 spinner_principal.setAdapter(adapter);
             }
@@ -159,10 +162,12 @@ public class Encuesta extends Activity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
-                        if (position < candidatos.length()) {
-                            if (porCandidato) {
+                        if (porCandidato) {
+                            if (position < candidatos.length()) {
                                 listas = candidatos.getJSONObject(position).getJSONArray("dataListas");
-                            } else {
+                            }
+                        } else {
+                            if (position < partidos.length()) {
                                 listas = partidos.getJSONObject(position).getJSONArray("dataListas");
                             }
                         }
@@ -171,13 +176,14 @@ public class Encuesta extends Activity {
                         if (preguntarLista) {
                             int total = listas.length();
                             pregunta_lista.setText("Usted que lista piensa votar?");
-                            Integer[] listas_spinner = new Integer[total+1];
+                            String[] listas_spinner = new String[total+2];
                             for (int i = 0; i < total; i++) {
                                 JSONObject json = listas.getJSONObject(i);
-                                listas_spinner[i] = json.getInt("numero");
+                                listas_spinner[i] = String.valueOf(json.getInt("numero"));
                             }
-                            listas_spinner[total] = new Integer(0);
-                            ArrayAdapter<Integer> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
+                            listas_spinner[total] = new String("No sabe");
+                            listas_spinner[total+1] = new String("En Blanco");
+                            ArrayAdapter<String> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
                             spinner_lista.setAdapter(adapter);
                         } else {
                             pregunta_lista.setVisibility(View.INVISIBLE);
@@ -198,13 +204,14 @@ public class Encuesta extends Activity {
             if (preguntarLista){
                 total = listas.length();
                 pregunta_lista.setText("Usted que lista piensa votar?");
-                Integer[] listas_spinner = new Integer[total+1];
+                String[] listas_spinner = new String[total+2];
                 for (int i = 0; i < total; i++) {
                     JSONObject json = listas.getJSONObject(i);
-                    listas_spinner[i] = json.getInt("numero");
+                    listas_spinner[i] = String.valueOf(json.getInt("numero"));
                 }
-                listas_spinner[total] = new Integer(0);
-                ArrayAdapter<Integer> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listas_spinner );
+                listas_spinner[total] = new String("No sabe");
+                listas_spinner[total+1] = new String("En Blanco");
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, listas_spinner );
                 spinner_lista.setAdapter(adapter);
             } else {
                 pregunta_lista.setVisibility(View.INVISIBLE);
@@ -239,6 +246,25 @@ public class Encuesta extends Activity {
             } else {
                 pregunta_nivel.setVisibility(View.INVISIBLE);
                 combo_nivel.setVisibility(View.INVISIBLE);
+            }
+            TextView pregunta_trabaja = (TextView) findViewById(R.id.pregunta_trabaja);
+            Spinner combo_trabaja = (Spinner) findViewById(R.id.combo_trabaja);
+            if (preguntarTrabaja){
+                pregunta_trabaja.setText("Trabaja :");
+                String[] trabaja_spinner = new String[] {"Si","No"};
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, trabaja_spinner );
+                combo_trabaja.setAdapter(adapter);
+            } else {
+                pregunta_trabaja.setVisibility(View.INVISIBLE);
+                combo_trabaja.setVisibility(View.INVISIBLE);
+            }
+            TextView pregunta_ingresos = (TextView) findViewById(R.id.pregunta_ingreso);
+            EditText input_ingresos = (EditText) findViewById(R.id.input_ingreso);
+            if (preguntarIngresos){
+                pregunta_ingresos.setText("Ingresos :");
+            } else {
+                pregunta_ingresos.setVisibility(View.INVISIBLE);
+                input_ingresos.setVisibility(View.INVISIBLE);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -291,7 +317,17 @@ public class Encuesta extends Activity {
         }
         Spinner spinner_lista = (Spinner) findViewById(R.id.combo_lista);
         if (preguntarLista){
-            int lista = (spinner_lista.getSelectedItem()!=null)?getIdLista((int) spinner_lista.getSelectedItem()):0;
+            int lista;
+            String seleccion = (String) spinner_lista.getSelectedItem();
+            if(seleccion == null){
+                lista = -1;
+            } else if(seleccion.equalsIgnoreCase("No sabe")){
+                lista = -1;
+            } else if(seleccion.equalsIgnoreCase("En Blanco")){
+                lista = 0;
+            } else {
+                lista = getIdLista(Integer.valueOf(seleccion));
+            }
             opinion.setIdLista(lista);
         }
         EditText input_edad = (EditText) findViewById(R.id.input_edad);
@@ -308,6 +344,22 @@ public class Encuesta extends Activity {
         if (preguntarNivelEstudio){
             String nivelEstudio = (String) combo_nivel.getSelectedItem();
             opinion.setNivelEstudio((nivelEstudio!=null)?nivelEstudio:"");
+        }
+        Spinner combo_trabaja = (Spinner) findViewById(R.id.combo_trabaja);
+        if (preguntarTrabaja){
+            String trabaja = (String) combo_trabaja.getSelectedItem();
+            if (trabaja!=null){
+                if(trabaja.equalsIgnoreCase("Si")){
+                    opinion.setTrabaja(true);
+                }else{
+                    opinion.setTrabaja(false);
+                }
+            }
+        }
+        EditText input_ingresos = (EditText) findViewById(R.id.input_ingreso);
+        if (preguntarIngresos){
+            double ingresos = Integer.parseInt(input_ingresos.getText().toString());
+            opinion.setIngresos(ingresos);
         }
 
         getBus().post(new CreateOpinionEvent(opinion));
