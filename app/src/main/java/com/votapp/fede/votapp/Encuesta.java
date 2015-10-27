@@ -138,23 +138,25 @@ public class Encuesta extends Activity {
             if (porCandidato){
                 total = candidatos.length();
                 pregunta_principal.setText("Usted que candidato piensa votar?");
-                String[] candidatos_spinner = new String[total+1];
+                String[] candidatos_spinner = new String[total+2];
                 for (int i = 0; i < total; i++) {
                     JSONObject json = candidatos.getJSONObject(i);
                     candidatos_spinner[i] = json.getString("nombre");
                 }
-                candidatos_spinner[total] = new String("En Blanco");
+                candidatos_spinner[total] = new String("No sabe");
+                candidatos_spinner[total+1] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, candidatos_spinner );
                 spinner_principal.setAdapter(adapter);
             } else {
                 total = partidos.length();
                 pregunta_principal.setText("Usted que partido piensa votar?");
-                String[] partidos_spinner = new String[total+1];
+                String[] partidos_spinner = new String[total+2];
                 for (int i = 0; i < total; i++) {
                     JSONObject json = partidos.getJSONObject(i);
                     partidos_spinner[i] = json.getString("nombre");
                 }
-                partidos_spinner[total] = new String("En Blanco");
+                partidos_spinner[total] = new String("No sabe");
+                partidos_spinner[total+1] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, partidos_spinner );
                 spinner_principal.setAdapter(adapter);
             }
@@ -162,29 +164,42 @@ public class Encuesta extends Activity {
                 @Override
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     try {
+                        boolean enBlanco = false;
                         if (porCandidato) {
                             if (position < candidatos.length()) {
                                 listas = candidatos.getJSONObject(position).getJSONArray("dataListas");
+                            } else {
+                                enBlanco = true;
                             }
                         } else {
                             if (position < partidos.length()) {
                                 listas = partidos.getJSONObject(position).getJSONArray("dataListas");
+                            } else {
+                                enBlanco = true;
                             }
                         }
                         TextView pregunta_lista = (TextView) findViewById(R.id.pregunta_lista);
                         Spinner spinner_lista = (Spinner) findViewById(R.id.combo_lista);
                         if (preguntarLista) {
-                            int total = listas.length();
-                            pregunta_lista.setText("Usted que lista piensa votar?");
-                            String[] listas_spinner = new String[total+2];
-                            for (int i = 0; i < total; i++) {
-                                JSONObject json = listas.getJSONObject(i);
-                                listas_spinner[i] = String.valueOf(json.getInt("numero"));
+                            if(enBlanco){
+                                String[] listas_spinner = new String[1];
+                                listas_spinner[1] = new String("En Blanco");
+                                ArrayAdapter<String> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
+                                spinner_lista.setAdapter(adapter);
+                            }else {
+                                    int total = listas.length();
+                                    pregunta_lista.setText("Usted que lista piensa votar?");
+                                    String[] listas_spinner = new String[total + 2];
+                                    for (int i = 0; i < total; i++) {
+                                        JSONObject json = listas.getJSONObject(i);
+                                        listas_spinner[i] = String.valueOf(json.getInt("numero"));
+                                    }
+                                    listas_spinner[total] = new String("No sabe");
+                                    listas_spinner[total + 1] = new String("En Blanco");
+                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
+                                    spinner_lista.setAdapter(adapter);
+
                             }
-                            listas_spinner[total] = new String("No sabe");
-                            listas_spinner[total+1] = new String("En Blanco");
-                            ArrayAdapter<String> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
-                            spinner_lista.setAdapter(adapter);
                         } else {
                             pregunta_lista.setVisibility(View.INVISIBLE);
                             spinner_lista.setVisibility(View.INVISIBLE);

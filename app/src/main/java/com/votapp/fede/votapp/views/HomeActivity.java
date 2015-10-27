@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -40,11 +41,13 @@ import com.votapp.fede.votapp.controller.AppController;
 import com.votapp.fede.votapp.domain.Emergencia;
 import com.votapp.fede.votapp.domain.utils.Constants;
 import com.votapp.fede.votapp.events.EmergencyEvent;
+import com.votapp.fede.votapp.events.GetAyudaEvent;
 import com.votapp.fede.votapp.events.GetEncuestasEvent;
 import com.votapp.fede.votapp.events.LoadedErrorEvent;
 import com.votapp.fede.votapp.events.LoadedMeEvent;
 import com.votapp.fede.votapp.util.ResponseToString;
 import com.votapp.fede.votapp.views.fragments.NavigationDrawerFragment;
+import com.votapp.fede.votapp.views.fragments.ayuda;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,6 +78,7 @@ public class HomeActivity extends ActionBarActivity
     * - token devuelto por el login.
     * */
     private String userToken;
+    private String celular;
     private String username;
     private int idUser;
     private JSONObject payloadToken;
@@ -138,6 +142,10 @@ public class HomeActivity extends ActionBarActivity
             consultoraID = payloadToken.getInt("idConsultora");
             username = payloadToken.getString("username");
             idUser = payloadToken.getInt("idUsuario");
+            celular = payloadToken.getString("numConsultora");
+            if (celular.equalsIgnoreCase("null")) {
+                celular = null;
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (UnsupportedEncodingException e) {
@@ -154,7 +162,8 @@ public class HomeActivity extends ActionBarActivity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
         TextView message = (TextView) findViewById(R.id.usermsg_welcome);
-        message.setText("Bienvenido "+username+"!");
+        message.setText("Bienvenido " + username + "!");
+
         mBus = BusProvider.getInstance();
     }
 
@@ -163,7 +172,7 @@ public class HomeActivity extends ActionBarActivity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                .replace(R.id.home_content, PlaceholderFragment.newInstance(position + 1))
                 .commit();
     }
 
@@ -175,6 +184,7 @@ public class HomeActivity extends ActionBarActivity
                 break;
             case 2:
                 mTitle = getString(R.string.menu_option2);
+                getBus().post(new GetAyudaEvent());
                 break;
             case 3:
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
@@ -182,6 +192,7 @@ public class HomeActivity extends ActionBarActivity
                 editor.clear();
                 editor.commit();
                 Intent intent = new Intent(this, Login.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 break;
         }
@@ -302,12 +313,15 @@ public class HomeActivity extends ActionBarActivity
         locationEmergencia.setIdEncuestador(idUser);
         locationEmergencia.setIdConsultora(consultoraID);
 
-        SmsManager smsManager = SmsManager.getDefault();
-        smsManager.sendTextMessage("+59899858771", null, "AYUDA! Encuestador "+this.username+" en peligro." +
-                " Lugar: (latitud, longitud):("+
-                //location.getLatitude()+","+location.getLongitude()+
-                ")" , null, null);
+        if(celular != null) {
+            SmsManager smsManager = SmsManager.getDefault();
 
+            smsManager.sendTextMessage(celular, null, "AYUDA! Encuestador " + this.username + " en peligro." +
+                    " Lugar: (latitud, longitud):(" +
+                    //location.getLatitude()+","+location.getLongitude()+
+                    ")", null, null);
+            Toast.makeText(getApplicationContext(),"SMS ENVIADO PIDIENDO AYUDA",Toast.LENGTH_SHORT).show();
+        }
         Callback callback = new ResponseCallback() {
             @Override
             public void success(Response response) {
@@ -323,6 +337,23 @@ public class HomeActivity extends ActionBarActivity
         ConsultorApi mApi = (ConsultorApi) AppController.getApiOfType(ApiTypes.USER_API);
         mApi.alertarEmergencia(locationEmergencia, callback);
 
+
+    }
+
+    @Subscribe
+    public void onAlarm(GetAyudaEvent ayudaEvent) {
+       // Intent intent = new Intent(HomeActivity.this, Ayuda.class);
+        //startActivity(intent);
+        /*android.app.FragmentManager fm = getFragmentManager();
+        android.app.FragmentTransaction ft = fm.beginTransaction();
+        fm.beginTransaction();
+        ayuda fragOne = new ayuda();
+        ft.show(fragOne);*/
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.home_content, new ayuda())
+                .commit();
 
     }
 

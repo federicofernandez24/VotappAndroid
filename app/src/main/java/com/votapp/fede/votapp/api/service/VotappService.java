@@ -24,7 +24,7 @@ public interface VotappService {
     @POST("/usuario/loginEncuestador")
     void login(@Body User auth, Callback<Response> callback);
 
-    @GET("/encuesta/getEncuestasByIdConsultora/{id}")
+    @GET("/encuesta/protected/getEncuestasNoFinalizadasByIdConsultora/{id}")
     void getEncuestasByIdConsultora(@Path("id") int groupId, Callback<Response> callback);
 
     @POST("/encuesta/protected/crearRespuesta")

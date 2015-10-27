@@ -67,4 +67,10 @@
         android:name="com.votapp.fede.votapp.views.fragments.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 
+    <!--<fragment
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" android:id="@+id/ayuda_fragmenthome"
+        android:name="com.votapp.fede.votapp.views.fragments.ayuda"
+        /> -->
+
 </android.support.v4.widget.DrawerLayout>

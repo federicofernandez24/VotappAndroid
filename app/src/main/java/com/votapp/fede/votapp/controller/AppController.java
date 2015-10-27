@@ -15,7 +15,7 @@ import retrofit.converter.GsonConverter;
 public class AppController extends Application {
 
         private static AppController instance;
-        private static final String API_URL = "http://192.168.1.43:8080/Votapp/services";
+        private static final String API_URL = "http://192.168.1.42:8080/Votapp/services";
 
         @Override
         public void onCreate() {
