@@ -350,6 +350,12 @@ public class HomeActivity extends ActionBarActivity
         ayuda fragOne = new ayuda();
         ft.show(fragOne);*/
 
+        ListView lista = (ListView) findViewById(R.id.encuestasList);
+
+        String[] stringarray = new String[0];
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringarray);
+        lista.setAdapter(adapter);
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.home_content, new ayuda())
