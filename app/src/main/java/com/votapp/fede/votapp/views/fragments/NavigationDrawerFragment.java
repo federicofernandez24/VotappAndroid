@@ -117,6 +117,7 @@ public class NavigationDrawerFragment extends Fragment {
         ArrayList<ItemMenu> retorno = new ArrayList<ItemMenu>();
         retorno.add(new ItemMenu("Encuestas", R.drawable.file_font_awesome));
         retorno.add(new ItemMenu("Ayuda", R.drawable.help_font_awesome));
+        retorno.add(new ItemMenu("Configuracion", R.drawable.cog_font_awesome));
         retorno.add(new ItemMenu("Cerrar Sesión", R.drawable.sign_out_awesome));
         return retorno;
     }

@@ -14,32 +14,52 @@ import retrofit.converter.GsonConverter;
  */
 public class AppController extends Application {
 
-        private static AppController instance;
-        private static final String API_URL = "http://192.168.1.42:8080/Votapp/services";
+    private static AppController instance;
+    private static final String API_URL = "/Votapp/services";
 
-        @Override
-        public void onCreate() {
-            super.onCreate();
-            instance = this;
+    private static String API_ENDPOINT = "http://192.168.1.42";
+    private static String API_PORT = "8080";
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        instance = this;
+    }
+
+    public static synchronized AppController getInstance() {
+
+        return instance;
+    }
+
+    public static RetrofitApi getApiOfType(ApiTypes type) {
+        type.updateEndPoint();
+        return type.getApiType();
+    }
+
+    public static String getApiUrl(){
+        return AppController.API_ENDPOINT+":"+AppController.API_PORT+AppController.API_URL;
+    }
+
+    public static void setApiEndpoint (String ip, boolean https){
+
+        if (https){
+            AppController.API_ENDPOINT = "https://"+ip;
+        }else{
+            AppController.API_ENDPOINT = "http://"+ip;
         }
+    }
 
-        public static synchronized AppController getInstance() {
+    public static void setApiPort (String port){
+        AppController.API_PORT = port;
+    }
 
-            return instance;
-        }
+    public static RestAdapter getRestAdapter() {
 
-        public static RetrofitApi getApiOfType(ApiTypes type) {
-
-            return type.getApiType();
-        }
-
-        public static RestAdapter getRestAdapter() {
-
-            RestAdapter.Builder builder = new RestAdapter.Builder()
-                    .setLogLevel(RestAdapter.LogLevel.FULL)
-                    .setEndpoint(API_URL)
-                    .setConverter(new GsonConverter(new Gson()));
-            return builder.build();
-        }
+        RestAdapter.Builder builder = new RestAdapter.Builder()
+                .setLogLevel(RestAdapter.LogLevel.FULL)
+                .setEndpoint(getApiUrl())
+                .setConverter(new GsonConverter(new Gson()));
+        return builder.build();
+    }
 
     }

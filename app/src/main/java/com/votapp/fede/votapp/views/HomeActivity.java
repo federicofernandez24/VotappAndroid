@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,12 +44,14 @@ import com.votapp.fede.votapp.domain.Emergencia;
 import com.votapp.fede.votapp.domain.utils.Constants;
 import com.votapp.fede.votapp.events.EmergencyEvent;
 import com.votapp.fede.votapp.events.GetAyudaEvent;
+import com.votapp.fede.votapp.events.GetConfigEvent;
 import com.votapp.fede.votapp.events.GetEncuestasEvent;
 import com.votapp.fede.votapp.events.LoadedErrorEvent;
 import com.votapp.fede.votapp.events.LoadedMeEvent;
 import com.votapp.fede.votapp.util.ResponseToString;
 import com.votapp.fede.votapp.views.fragments.NavigationDrawerFragment;
 import com.votapp.fede.votapp.views.fragments.ayuda;
+import com.votapp.fede.votapp.views.fragments.ip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -187,6 +191,10 @@ public class HomeActivity extends ActionBarActivity
                 getBus().post(new GetAyudaEvent());
                 break;
             case 3:
+                mTitle = getString(R.string.menu_option3);
+                getBus().post(new GetConfigEvent());
+                break;
+            case 4:
                 SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.clear();
@@ -340,15 +348,18 @@ public class HomeActivity extends ActionBarActivity
 
     }
 
+    public void onClickGuardarConfiguracion(View view) {
+
+        EditText newIp = (EditText) findViewById(R.id.new_ip);
+        EditText newPort = (EditText) findViewById(R.id.new_port);
+        CheckBox checkhttps = (CheckBox) findViewById(R.id.check_https);
+
+        AppController.setApiEndpoint(newIp.getText().toString(), checkhttps.isSelected());
+        AppController.setApiPort(newPort.getText().toString());
+    }
+
     @Subscribe
     public void onAlarm(GetAyudaEvent ayudaEvent) {
-       // Intent intent = new Intent(HomeActivity.this, Ayuda.class);
-        //startActivity(intent);
-        /*android.app.FragmentManager fm = getFragmentManager();
-        android.app.FragmentTransaction ft = fm.beginTransaction();
-        fm.beginTransaction();
-        ayuda fragOne = new ayuda();
-        ft.show(fragOne);*/
 
         ListView lista = (ListView) findViewById(R.id.encuestasList);
 
@@ -359,6 +370,22 @@ public class HomeActivity extends ActionBarActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction()
                 .replace(R.id.home_content, new ayuda())
+                .commit();
+
+    }
+
+    @Subscribe
+    public void onAlarm(GetConfigEvent configEvent) {
+
+        ListView lista = (ListView) findViewById(R.id.encuestasList);
+
+        String[] stringarray = new String[0];
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringarray);
+        lista.setAdapter(adapter);
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction()
+                .replace(R.id.home_content, new ip())
                 .commit();
 
     }

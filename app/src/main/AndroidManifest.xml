@@ -43,16 +43,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.votapp.fede.votapp.views.HomeActivity" />
         </activity>
-        <activity
-            android:name=".views.Ayuda"
-            android:label="@string/title_activity_ayuda"
-            android:parentActivityName=".views.HomeActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.votapp.fede.votapp.views.HomeActivity" />
-        </activity>
     </application>
 
 </manifest>

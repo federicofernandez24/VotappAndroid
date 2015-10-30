@@ -15,7 +15,7 @@
 
     <string name="menu_option1">Encuestas</string>
     <string name="menu_option2">Ayuda</string>
-    <string name="title_section3">Section 3</string>
+    <string name="menu_option3">Configuracion</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -33,4 +33,9 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="iptext">IP</string>
+    <string name="puertotext">Puerto</string>
+    <string name="httpstext">Https ?</string>
+    <string name="savetext">Guardar</string>
+    <string name="configtext">Configuración</string>
 </resources>
