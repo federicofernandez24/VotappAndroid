@@ -138,25 +138,21 @@ public class Encuesta extends Activity {
             if (porCandidato){
                 total = candidatos.length();
                 pregunta_principal.setText("Usted que candidato piensa votar?");
-                String[] candidatos_spinner = new String[total+2];
+                String[] candidatos_spinner = new String[total];
                 for (int i = 0; i < total; i++) {
                     JSONObject json = candidatos.getJSONObject(i);
                     candidatos_spinner[i] = json.getString("nombre");
                 }
-                candidatos_spinner[total] = new String("No sabe");
-                candidatos_spinner[total+1] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, candidatos_spinner );
                 spinner_principal.setAdapter(adapter);
             } else {
                 total = partidos.length();
                 pregunta_principal.setText("Usted que partido piensa votar?");
-                String[] partidos_spinner = new String[total+2];
+                String[] partidos_spinner = new String[total];
                 for (int i = 0; i < total; i++) {
                     JSONObject json = partidos.getJSONObject(i);
                     partidos_spinner[i] = json.getString("nombre");
                 }
-                partidos_spinner[total] = new String("No sabe");
-                partidos_spinner[total+1] = new String("En Blanco");
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, partidos_spinner );
                 spinner_principal.setAdapter(adapter);
             }
@@ -189,13 +185,12 @@ public class Encuesta extends Activity {
                             }else {
                                     int total = listas.length();
                                     pregunta_lista.setText("Usted que lista piensa votar?");
-                                    String[] listas_spinner = new String[total + 2];
+                                    String[] listas_spinner = new String[total + 1];
                                     for (int i = 0; i < total; i++) {
                                         JSONObject json = listas.getJSONObject(i);
                                         listas_spinner[i] = String.valueOf(json.getInt("numero"));
                                     }
                                     listas_spinner[total] = new String("No sabe");
-                                    listas_spinner[total + 1] = new String("En Blanco");
                                     ArrayAdapter<String> adapter = new ArrayAdapter<>(Encuesta.this, android.R.layout.simple_spinner_dropdown_item, listas_spinner);
                                     spinner_lista.setAdapter(adapter);
 

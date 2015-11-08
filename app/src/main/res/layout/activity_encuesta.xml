@@ -32,12 +32,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_principal" />
+                        android:id="@+id/pregunta_principal"
+                        style="@style/estiloTextoPreguntas" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/combo_principal" />
+                        android:id="@+id/combo_principal"
+                        style="@style/estiloTextoPreguntas" />
 
                 </LinearLayout>
 
@@ -49,12 +51,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_lista" />
+                        android:id="@+id/pregunta_lista"
+                        style="@style/estiloTextoPreguntas" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/combo_lista" />
+                        android:id="@+id/combo_lista"
+                        style="@style/estiloTextoPreguntas" />
 
                 </LinearLayout>
 
@@ -66,7 +70,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_edad" />
+                        android:id="@+id/pregunta_edad"
+                        style="@style/estiloTextoPreguntas" />
 
                     <EditText
                         android:layout_width="wrap_content"
@@ -85,12 +90,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_sexo" />
+                        android:id="@+id/pregunta_sexo"
+                        style="@style/estiloTextoPreguntas" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/combo_sexo" />
+                        android:id="@+id/combo_sexo"
+                        style="@style/estiloTextoPreguntas" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -101,12 +108,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_nivel" />
+                        android:id="@+id/pregunta_nivel"
+                        style="@style/estiloTextoPreguntas" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/combo_nivel" />
+                        android:id="@+id/combo_nivel"
+                        style="@style/estiloTextoPreguntas" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -117,12 +126,14 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_trabaja" />
+                        android:id="@+id/pregunta_trabaja"
+                        style="@style/estiloTextoPreguntas" />
 
                     <Spinner
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/combo_trabaja" />
+                        android:id="@+id/combo_trabaja"
+                        style="@style/estiloTextoPreguntas" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -133,7 +144,8 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/pregunta_ingreso" />
+                        android:id="@+id/pregunta_ingreso"
+                        style="@style/estiloTextoPreguntas" />
 
                     <EditText
                         android:layout_width="wrap_content"
